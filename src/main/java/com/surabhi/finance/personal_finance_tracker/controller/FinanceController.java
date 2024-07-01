@@ -18,19 +18,6 @@ public class FinanceController {
     private FinanceService financeService;
 
     // Transactions
-
-//    @PostMapping("/transactions")
-//    public ResponseEntity<?> addTransactions(@RequestBody List<Transaction> transactions) {
-//        financeService.saveTransactions(transactions);
-//        return ResponseEntity.ok("Transactions added successfully");
-//    }
-
-//    @PostMapping("/transactions")
-//    public ResponseEntity<?> addTransaction(@RequestBody Transaction transaction, @RequestParam Long accountId) {
-//        Transaction savedTransaction = financeService.addTransactionToAccount(accountId, transaction);
-//        return ResponseEntity.ok(savedTransaction);
-//    }
-
     @PostMapping("/transactions")
     public ResponseEntity<?> createTransaction(@RequestBody TransactionDTO transactionDTO) {
         try {

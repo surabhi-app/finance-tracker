@@ -9,8 +9,6 @@ import com.surabhi.finance.personal_finance_tracker.repository.InvestmentReposit
 import com.surabhi.finance.personal_finance_tracker.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
 import java.util.List;
 
 @Service
@@ -21,20 +19,6 @@ public class FinanceService {
     private AccountRepository accountRepository;
     @Autowired
     private InvestmentRepository investmentRepository;
-
-//    public Transaction addTransactionToAccount(Long accountId, Transaction transaction) {
-//        Account account = accountRepository.findById(accountId)
-//                .orElseThrow(() -> new RuntimeException("Account not found"));
-//        transaction.setAccount(account);
-//        account.getTransactions().add(transaction);
-//        return transactionRepository.save(transaction);
-//    }
-//    public Transaction addTransactionToAccount(Long accountId, Transaction transaction) {
-//        Account account = accountRepository.findById(accountId)
-//                .orElseThrow(() -> new RuntimeException("Account not found"));
-//        transaction.setAccount(account);
-//        return transactionRepository.save(transaction);
-//    }
 
     public Transaction createTransaction(TransactionDTO transactionDTO) {
         Transaction transaction = new Transaction();
