@@ -1,5 +1,6 @@
 package com.surabhi.finance.personal_finance_tracker.service;
 
+import com.surabhi.finance.personal_finance_tracker.dto.MonthlySpendingReportDTO;
 import com.surabhi.finance.personal_finance_tracker.dto.TransactionDTO;
 import com.surabhi.finance.personal_finance_tracker.model.Account;
 import com.surabhi.finance.personal_finance_tracker.model.Investment;
@@ -9,7 +10,11 @@ import com.surabhi.finance.personal_finance_tracker.repository.InvestmentReposit
 import com.surabhi.finance.personal_finance_tracker.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class FinanceService {
@@ -100,5 +105,29 @@ public class FinanceService {
 
     public void deleteInvestment(Long id) {
         investmentRepository.deleteById(id);
+    }
+
+    // Generate monthly spending report
+    public MonthlySpendingReportDTO getMonthlySpendingReport(Long accountId, YearMonth month) {
+        List<Transaction> transactions = transactionRepository.findByAccountId(accountId);
+
+        Map<String, BigDecimal> categorizedSpending = transactions.stream()
+                .filter(t -> YearMonth.from(t.getDate()).equals(month))
+                .collect(Collectors.groupingBy(
+                        Transaction::getCategory,
+                        Collectors.reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)
+                ));
+
+        BigDecimal totalSpending = categorizedSpending.values().stream()
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new MonthlySpendingReportDTO(categorizedSpending, totalSpending);
+    }
+
+    // Get total balance across all accounts
+    public BigDecimal getTotalBalance() {
+        return accountRepository.findAll().stream()
+                .map(Account::getBalance)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

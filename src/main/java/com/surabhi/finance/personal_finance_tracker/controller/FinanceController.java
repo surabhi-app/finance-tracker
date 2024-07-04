@@ -1,5 +1,6 @@
 package com.surabhi.finance.personal_finance_tracker.controller;
 
+import com.surabhi.finance.personal_finance_tracker.dto.MonthlySpendingReportDTO;
 import com.surabhi.finance.personal_finance_tracker.dto.TransactionDTO;
 import com.surabhi.finance.personal_finance_tracker.model.Account;
 import com.surabhi.finance.personal_finance_tracker.model.Investment;
@@ -8,8 +9,10 @@ import com.surabhi.finance.personal_finance_tracker.service.FinanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.math.BigDecimal;
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/finances")
@@ -88,6 +91,20 @@ public class FinanceController {
     public ResponseEntity<?> deleteInvestment(@PathVariable Long id) {
         financeService.deleteInvestment(id);
         return ResponseEntity.ok("Investment deleted successfully");
+    }
+
+    // Reports
+    @GetMapping("/reports/monthly-spending/{accountId}")
+    public ResponseEntity<MonthlySpendingReportDTO> getMonthlySpendingReport(@PathVariable Long accountId, @RequestParam String month) {
+        YearMonth yearMonth = YearMonth.parse(month);
+        MonthlySpendingReportDTO report = financeService.getMonthlySpendingReport(accountId, yearMonth);
+        return ResponseEntity.ok(report);
+    }
+
+    @GetMapping("/reports/total-balance")
+    public ResponseEntity<BigDecimal> getTotalBalance() {
+        BigDecimal totalBalance = financeService.getTotalBalance();
+        return ResponseEntity.ok(totalBalance);
     }
 }
 
